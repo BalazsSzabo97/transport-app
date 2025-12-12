@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Job;
 use App\Models\Driver;
-use App\Models\Vehicle;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -17,43 +15,6 @@ class AdminController extends Controller
         return response()->json($drivers);
     }
 
-    public function createDriver(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:drivers,email',
-            'password' => 'required|string|min:6',
-        ]);
-
-        $driver = Driver::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json($driver, 201);
-    }
-
-    public function assignVehicle(Request $request, $driverId)
-    {
-        $request->validate([
-            'brand' => 'required|string',
-            'type' => 'required|string',
-            'plate' => 'required|string|unique:vehicles,plate',
-        ]);
-
-        $driver = Driver::findOrFail($driverId);
-
-        $vehicle = Vehicle::create([
-            'brand' => $request->brand,
-            'type' => $request->type,
-            'plate' => $request->plate,
-            'driver_id' => $driver->id,
-        ]);
-
-        return response()->json($vehicle, 201);
-    }
-
     public function createJob(Request $request)
     {
         $request->validate([
@@ -61,7 +22,6 @@ class AdminController extends Controller
             'to_address' => 'required|string',
             'recipient_name' => 'required|string',
             'recipient_phone' => 'required|string',
-            'driver_id' => 'nullable|exists:drivers,id',
         ]);
 
         $job = Job::create([
@@ -69,11 +29,11 @@ class AdminController extends Controller
             'to_address' => $request->to_address,
             'recipient_name' => $request->recipient_name,
             'recipient_phone' => $request->recipient_phone,
-            'driver_id' => $request->driver_id,
+            'driver_id' => null,
             'status' => 'assigned',
         ]);
 
-        return response()->json($job, 201);
+        return redirect()->route('admin.dashboard')->with('success', 'Új munka létrehozva!');
     }
 
     public function assignJob(Request $request, $jobId)
@@ -87,19 +47,58 @@ class AdminController extends Controller
         $job->status = 'assigned';
         $job->save();
 
-        return response()->json($job);
+        return redirect()->route('admin.dashboard')->with('success', 'A munka sikeresen kiosztva!');
     }
 
-    public function updateJobStatus(Request $request, $jobId)
+    public function updateJob(Request $request, $jobId)
     {
         $request->validate([
-            'status' => 'required|in:assigned,in_progress,completed,failed',
+            'from_address' => 'required|string',
+            'to_address' => 'required|string',
+            'recipient_name' => 'required|string',
+            'recipient_phone' => 'required|string',
         ]);
 
         $job = Job::findOrFail($jobId);
-        $job->status = $request->status;
+        $job->from_address = $request->from_address;
+        $job->to_address = $request->to_address;
+        $job->recipient_name = $request->recipient_name;
+        $job->recipient_phone = $request->recipient_phone;
         $job->save();
 
-        return response()->json($job);
+        return redirect()->route('admin.dashboard')->with('success', 'Munka frissítve!');
     }
+
+
+    public function deleteJob($jobId)
+    {
+        $job = Job::findOrFail($jobId);
+        $job->delete();
+
+        return redirect()->route('admin.dashboard')->with('success', 'Munka törölve!');
+    }
+
+
+    public function dashboard(Request $request)
+    {
+        $query = Job::with('driver')->orderBy('created_at', 'desc');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $jobs = $query->get();
+        $drivers = Driver::orderBy('name')->get();
+
+        $statusLabels = [
+            'assigned' => 'Kiosztva',
+            'in_progress' => 'Folyamatban',
+            'completed' => 'Elvégezve',
+            'failed' => 'Sikertelen'
+        ];
+
+        return view('admin.dashboard', compact('jobs', 'drivers', 'statusLabels'));
+    }
+
+
 }

@@ -9,3 +9,21 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer components {
+    .status-badge {
+        @apply text-black text-base px-3 py-1 rounded-md inline-block;
+    }
+
+    .status-new {
+        @apply bg-yellow-200;
+    }
+
+    .status-in-progress {
+        @apply bg-blue-200;
+    }
+
+    .status-completed {
+        @apply bg-green-200;
+    }
+}
