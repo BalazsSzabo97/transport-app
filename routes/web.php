@@ -36,21 +36,19 @@ Route::post('/setup-database', [SetupController::class, 'setup'])->name('setup.d
 // ----------------------------
 Route::prefix('admin')->middleware('auth:admin')->group(function () {
 
-    // Dashboard
+    // Admin Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-    // Drivers
+    // Driver Dashboard
     Route::get('/drivers', [AdminController::class, 'listDrivers'])->name('admin.drivers.list');
-    Route::post('/drivers', [AdminController::class, 'createDriver'])->name('admin.drivers.create');
-
-    // Vehicles
-    Route::post('/drivers/{driver}/vehicle', [AdminController::class, 'assignVehicle'])->name('admin.vehicles.assign');
 
     // Jobs
-    Route::get('/jobs', [AdminController::class, 'listJobs'])->name('admin.jobs.list'); // List jobs
+    Route::get('/jobs', [AdminController::class, 'listJobs'])->name('admin.jobs.list');
     Route::post('/jobs', [AdminController::class, 'createJob'])->name('admin.jobs.create');
     Route::post('/jobs/{job}/assign', [AdminController::class, 'assignJob'])->name('admin.jobs.assign');
-    Route::patch('/jobs/{job}/status', [AdminController::class, 'updateJobStatus'])->name('admin.jobs.status');
+    Route::patch('/jobs/{job}', [AdminController::class, 'updateJob'])->name('admin.jobs.update');
+    Route::delete('/jobs/{job}', [AdminController::class, 'deleteJob'])->name('admin.jobs.delete');
+
 });
 
 
