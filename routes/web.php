@@ -55,15 +55,10 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
 // ----------------------------
 // DRIVER ROUTES
 // ----------------------------
-Route::prefix('driver')->middleware('auth:driver')->group(function () {
+Route::middleware(['auth:driver'])->group(function () {
+    Route::get('/driver/dashboard', [DriverController::class, 'dashboard'])->name('driver.dashboard');
+    Route::patch('/driver/jobs/{job}/status', [DriverController::class, 'updateStatus'])->name('driver.jobs.updateStatus');
+    Route::post('/driver/vehicle', [DriverController::class, 'registerVehicle'])->name('driver.vehicle.register')->middleware('auth:driver');
 
-    // Dashboard
-    Route::get('/dashboard', [DriverController::class, 'dashboard'])->name('driver.dashboard');
-
-    // Jobs
-    Route::get('/jobs', [DriverController::class, 'myJobs'])->name('driver.jobs.list');
-    Route::patch('/jobs/{job}/status', [DriverController::class, 'updateJobStatus'])->name('driver.jobs.status');
-
-    // Registration
-    Route::post('/vehicle', [DriverController::class, 'registerVehicle'])->name('driver.vehicle.register');
 });
+
