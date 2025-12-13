@@ -56,12 +56,6 @@ class DriverController extends Controller
             ->with('success', 'Jármű regisztrálva.');
     }
 
-    public function vehicle()
-    {
-        return $this->hasOne(Vehicle::class);
-    }
-
-
     public function dashboard()
     {
         $driver = Auth::guard('driver')->user();

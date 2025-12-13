@@ -51,8 +51,8 @@
         <tbody>
             @foreach ($jobs as $job)
                 <tr class="
-                {{ !$job->driver_id ? 'table-warning' : '' }}
-                {{ $job->status === 'failed' ? 'table-danger' : '' }}">
+                                        {{ !$job->driver_id ? 'table-warning' : '' }}
+                                        {{ $job->status === 'failed' ? 'table-danger' : '' }}">
                     <td>{{ $job->id }}</td>
                     <td>{{ $job->from_address }}</td>
                     <td>{{ $job->to_address }}</td>
@@ -61,10 +61,10 @@
 
                     <td>
                         <span class="status-badge 
-                            {{ $job->status === 'Kiosztva' ? 'status-new' : '' }}
-                            {{ $job->status === 'Folyamatban' ? 'status-in-progress' : '' }}
-                            {{ $job->status === 'Elvégezve' ? 'status-completed' : '' }}
-                            {{ $job->status === 'Sikertelen' ? 'status-failed' : '' }}">
+                                            {{ $job->status === 'Kiosztva' ? 'status-new' : '' }}
+                                            {{ $job->status === 'Folyamatban' ? 'status-in-progress' : '' }}
+                                            {{ $job->status === 'Elvégezve' ? 'status-completed' : '' }}
+                                            {{ $job->status === 'Sikertelen' ? 'status-failed' : '' }}">
                             {{ $statusLabels[$job->status] ?? $job->status }}
                         </span>
                     </td>
@@ -92,140 +92,187 @@
 
                     </td>
                 </tr>
-
-                <div class="modal fade" id="assignJobModal{{ $job->id }}" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-
-                            <form method="POST" action="{{ route('admin.jobs.assign', $job->id) }}">
-                                @csrf
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Munka Kiosztása</h5>
-                                </div>
-
-                                <div class="modal-body">
-                                    <label>Válasszon Fuvarozót:</label>
-                                    <select name="driver_id" class="form-control" required>
-                                        <option value="">-- Válasszon --</option>
-                                        @foreach ($drivers as $driver)
-                                            <option value="{{ $driver->id }}">{{ $driver->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                                    <button class="btn btn-primary">Kiosztás</button>
-                                </div>
-
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="editJobModal{{ $job->id }}" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-
-                            <form method="POST" action="{{ route('admin.jobs.update', $job->id) }}">
-                                @csrf
-                                @method('PATCH')
-
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label>Kiindulási cím:</label>
-                                        <input type="text" name="from_address" class="form-control"
-                                            value="{{ $job->from_address }}" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Érkezési cím:</label>
-                                        <input type="text" name="to_address" class="form-control" value="{{ $job->to_address }}"
-                                            required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Címzett neve:</label>
-                                        <input type="text" name="recipient_name" class="form-control"
-                                            value="{{ $job->recipient_name }}" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Címzett telefonszáma:</label>
-                                        <input type="text" name="recipient_phone" class="form-control"
-                                            value="{{ $job->recipient_phone }}" required>
-                                    </div>
-                                </div>
-
-                                <div class="modal-footer d-flex justify-content-between">
-                                    <form method="POST" action="{{ route('admin.jobs.update', $job->id) }}">
-                                        @csrf
-                                        @method('PATCH')
-
-                                        <div>
-                                            <button type="submit" class="btn btn-primary">Mentés</button>
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Mégse</button>
-                                        </div>
-                                    </form>
-
-                                    <form method="POST" action="{{ route('admin.jobs.delete', $job->id) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger"
-                                            onclick="return confirm('Biztosan törölni szeretné ezt a munkát?')">
-                                            Törlés
-                                        </button>
-                                    </form>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
             @endforeach
         </tbody>
     </table>
 
-    <div class="modal fade" id="createJobModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
+    @foreach ($jobs as $job)
+        <div class="modal fade" id="assignJobModal{{ $job->id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
-                <form method="POST" action="{{ route('admin.jobs.create') }}">
-                    @csrf
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Új Munka Létrehozása</h5>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label>Kiindulási cím:</label>
-                            <input type="text" name="from_address" class="form-control" required>
+                    <form method="POST" action="{{ route('admin.jobs.assign', $job->id) }}">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title">Munka Kiosztása</h5>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Érkezési cím:</label>
-                            <input type="text" name="to_address" class="form-control" required>
+                        <div class="modal-body">
+                            <label>Válasszon Fuvarozót:</label>
+                            <select name="driver_id" class="form-control" required>
+                                <option value="">-- Válasszon --</option>
+                                @foreach ($confirmedDrivers as $driver)
+                                    <option value="{{ $driver->id }}">{{ $driver->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Címzett neve:</label>
-                            <input type="text" name="recipient_name" class="form-control" required>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                            <button class="btn btn-primary">Kiosztás</button>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Címzett telefonszáma:</label>
-                            <input type="text" name="recipient_phone" class="form-control" required>
-                        </div>
-                    </div>
+                    </form>
 
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                        <button class="btn btn-primary">Létrehozás</button>
-                    </div>
-
-                </form>
-
+                </div>
             </div>
         </div>
-    </div>
+
+        <div class="modal fade" id="editJobModal{{ $job->id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <form method="POST" action="{{ route('admin.jobs.update', $job->id) }}">
+                        @csrf
+                        @method('PATCH')
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Munka Szerkesztése</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label>Kiindulási cím:</label>
+                                <input type="text" name="from_address" class="form-control" value="{{ $job->from_address }}"
+                                    required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Érkezési cím:</label>
+                                <input type="text" name="to_address" class="form-control" value="{{ $job->to_address }}"
+                                    required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Címzett neve:</label>
+                                <input type="text" name="recipient_name" class="form-control" value="{{ $job->recipient_name }}"
+                                    required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Címzett telefonszáma:</label>
+                                <input type="text" name="recipient_phone" class="form-control"
+                                    value="{{ $job->recipient_phone }}" required>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer d-flex justify-content-between">
+                            <div>
+                                <button type="submit" class="btn btn-primary">Mentés</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <form method="POST" action="{{ route('admin.jobs.delete', $job->id) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Biztosan törölni szeretné ezt a munkát?')">
+                                Törlés
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+    <div class="modal fade" id="createJobModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <form method="POST" action="{{ route('admin.jobs.create') }}">
+                        @csrf
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Új Munka Létrehozása</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label>Kiindulási cím:</label>
+                                <input type="text" name="from_address" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Érkezési cím:</label>
+                                <input type="text" name="to_address" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Címzett neve:</label>
+                                <input type="text" name="recipient_name" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Címzett telefonszáma:</label>
+                                <input type="text" name="recipient_phone" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                            <button type="submit" class="btn btn-primary">Létrehozás</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    <h3 class="mt-5">Fuvarozók</h3>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Név</th>
+                <th>Email</th>
+                <th>Regisztráció Megerősítve</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($drivers as $driver)
+                <tr>
+                    <td>{{ $driver->id }}</td>
+                    <td>{{ $driver->name }}</td>
+                    <td>{{ $driver->email }}</td>
+                    <td>
+                        @if($driver->is_confirmed)
+                            <span class="badge bg-success">Igen</span>
+                        @else
+                            <span class="badge bg-warning">Nem</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if(!$driver->is_confirmed)
+                            <form method="POST" action="{{ route('admin.drivers.confirm', $driver->id) }}">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    Megerősítés
+                                </button>
+                            </form>
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 
 @endsection
