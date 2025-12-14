@@ -112,7 +112,7 @@ class AdminController extends Controller
 
     public function dashboard(Request $request)
     {
-        $query = Job::with('driver')->orderBy('created_at', 'desc');
+        $query = Job::with('driver')->orderBy('id', 'desc');
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
