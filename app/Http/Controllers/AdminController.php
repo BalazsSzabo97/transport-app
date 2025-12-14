@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Job;
 use App\Models\Driver;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -42,12 +41,18 @@ class AdminController extends Controller
             'driver_id' => 'required|exists:drivers,id',
         ]);
 
+        $driver = Driver::where('id', $request->driver_id)
+            ->where('is_confirmed', true)
+            ->firstOrFail();
+
         $job = Job::findOrFail($jobId);
-        $job->driver_id = $request->driver_id;
+        $job->driver_id = $driver->id;
         $job->status = 'assigned';
         $job->save();
 
-        return redirect()->route('admin.dashboard')->with('success', 'A munka sikeresen kiosztva!');
+        return redirect()
+            ->route('admin.dashboard')
+            ->with('success', 'A munka sikeresen kiosztva!');
     }
 
     public function updateJob(Request $request, $jobId)
@@ -78,6 +83,20 @@ class AdminController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Munka törölve!');
     }
 
+    public function unconfirmedDrivers()
+    {
+        $drivers = Driver::where('is_confirmed', false)->get();
+        return view('admin.unconfirmed_drivers', compact('drivers'));
+    }
+
+    public function confirmDriver($driverId)
+    {
+        $driver = Driver::findOrFail($driverId);
+        $driver->is_confirmed = true;
+        $driver->save();
+
+        return redirect()->back()->with('success', 'A fuvarozó sikeresen jóváhagyva.');
+    }
 
     public function dashboard(Request $request)
     {
@@ -89,6 +108,7 @@ class AdminController extends Controller
 
         $jobs = $query->get();
         $drivers = Driver::orderBy('name')->get();
+        $confirmedDrivers = Driver::where('is_confirmed', true)->orderBy('name')->get();
 
         $statusLabels = [
             'assigned' => 'Kiosztva',
@@ -97,7 +117,7 @@ class AdminController extends Controller
             'failed' => 'Sikertelen'
         ];
 
-        return view('admin.dashboard', compact('jobs', 'drivers', 'statusLabels'));
+        return view('admin.dashboard', compact('jobs', 'drivers', 'confirmedDrivers', 'statusLabels'));
     }
 
 
