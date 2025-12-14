@@ -15,6 +15,8 @@ class Job extends Model
         'driver_id',
     ];
 
+    public $timestamps = false;
+
     // RELATIONSHIPS
 
     public function driver()

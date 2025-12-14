@@ -20,4 +20,6 @@ class Admin extends Authenticatable
         'password',
         'token',
     ];
+
+    public $timestamps = false;
 }
