@@ -98,6 +98,18 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'A fuvarozó sikeresen jóváhagyva.');
     }
 
+    public function generateApiToken()
+    {
+        $admin = Auth::guard('admin')->user();
+
+        $admin->api_token = Str::random(40);
+        $admin->save();
+
+        return redirect()
+            ->back()
+            ->with('success', 'API token sikeresen létrehozva.');
+    }
+
     public function dashboard(Request $request)
     {
         $query = Job::with('driver')->orderBy('created_at', 'desc');

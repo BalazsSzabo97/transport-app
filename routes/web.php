@@ -41,6 +41,7 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
 
     // Admin Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::post('/admin/api-token/generate', [AdminController::class, 'generateApiToken'])->name('admin.api-token.generate');
 
     // Drivers
     Route::get('/drivers', [AdminController::class, 'listDrivers'])->name('admin.drivers.list');
