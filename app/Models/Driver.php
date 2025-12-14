@@ -19,6 +19,8 @@ class Driver extends Authenticatable
         'password',
     ];
 
+    public $timestamps = false;
+
     // RELATIONSHIPS
 
     // One driver has one vehicle
