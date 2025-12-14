@@ -61,7 +61,7 @@ class DriverController extends Controller
         $driver = Auth::guard('driver')->user();
 
         $jobs = Job::where('driver_id', $driver->id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->get();
 
         $statusLabels = [
