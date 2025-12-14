@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('type');
             $table->string('plate')->unique();
             $table->foreignId('driver_id')->constrained('drivers')->onDelete('cascade');
-            $table->timestamps();
         });
     }
     

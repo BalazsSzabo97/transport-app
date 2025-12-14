@@ -25,8 +25,6 @@ return new class extends Migration
             // Nullable because jobs can be created before assignment
             $table->foreignId('driver_id')->nullable()
                   ->constrained('drivers')->nullOnDelete();
-
-            $table->timestamps();
         });
     }
 
