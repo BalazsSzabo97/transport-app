@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Admin;
-use App\Models\Driver;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Models\Driver;
 
 
 class AuthController extends Controller
@@ -49,7 +49,6 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            // Pass errors into a named bag 'register'
             return redirect()->back()
                 ->withErrors($validator, 'register')
                 ->withInput();
@@ -60,6 +59,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'is_confirmed' => false, // default to unconfirmed
+            'token' => Str::random(40),
         ]);
 
         return redirect('/')->with('success', 'Sikeres regisztráció! Várjon az adminisztrátor megerősítésére.');

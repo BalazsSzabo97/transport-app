@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Job;
 use App\Models\Driver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -102,7 +104,7 @@ class AdminController extends Controller
     {
         $admin = Auth::guard('admin')->user();
 
-        $admin->api_token = Str::random(40);
+        $admin->token = Str::random(40);
         $admin->save();
 
         return redirect()
