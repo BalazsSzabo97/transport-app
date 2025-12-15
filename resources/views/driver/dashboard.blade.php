@@ -1,6 +1,39 @@
 @extends('layouts.app')
 
 @section('content')
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title mb-3">API hozzáférés</h5>
+
+            <p class="mb-2">API tokened aktív. Csak a hozzád rendelt munkákat érinti.</p>
+
+            <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#apiTokenModal">
+                <i class="bi bi-eye-fill me-1"></i> Token megtekintése
+            </button>
+
+            <div class="modal fade" id="apiTokenModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title">API token</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-warning">
+                                Ne oszd meg ezt a tokent másokkal!
+                            </div>
+                            <pre class="bg-light p-2 rounded">{{ auth('driver')->user()->token }}</pre>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if($driver->vehicle)
         <div class="card mb-4">
             <div class="card-header">Regisztrált Jármű</div>

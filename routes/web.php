@@ -37,17 +37,18 @@ Route::post('/setup-database', [SetupController::class, 'setup'])->name('setup.d
 // ----------------------------
 // ADMIN ROUTES
 // ----------------------------
+
 Route::prefix('admin')->middleware('auth:admin')->group(function () {
 
     // Admin Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::post('/api-token/generate', [AdminController::class, 'generateApiToken'])->name('admin.api-token.generate');
 
     // Drivers
     Route::get('/drivers', [AdminController::class, 'listDrivers'])->name('admin.drivers.list');
     Route::get('/admin/drivers/pending', [AdminController::class, 'pendingDrivers'])->name('admin.drivers.pending');
     Route::patch('/admin/drivers/{driver}/confirm', [AdminController::class, 'confirmDriver'])->name('admin.drivers.confirm');
     Route::get('/admin/unconfirmed-drivers', [AdminController::class, 'unconfirmedDrivers'])->name('admin.unconfirmed-drivers');
-    Route::post('/admin/drivers/{driver}/confirm', [AdminController::class, 'confirmDriver'])->name('admin.drivers.confirm');
 
     // Jobs
     Route::get('/jobs', [AdminController::class, 'listJobs'])->name('admin.jobs.list');
@@ -58,15 +59,13 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
 
 });
 
-
 // ----------------------------
 // DRIVER ROUTES
 // ----------------------------
+
 Route::middleware(['auth:driver'])->group(function () {
     Route::get('/driver/dashboard', [DriverController::class, 'dashboard'])->name('driver.dashboard');
     Route::patch('/driver/jobs/{job}/status', [DriverController::class, 'updateStatus'])->name('driver.jobs.updateStatus');
     Route::post('/driver/vehicle', [DriverController::class, 'registerVehicle'])->name('driver.vehicle.register');
     Route::post('/driver/register', [DriverController::class, 'register'])->name('driver.register.submit');
-
 });
-

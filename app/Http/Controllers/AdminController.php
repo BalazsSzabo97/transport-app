@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Job;
 use App\Models\Driver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -96,6 +98,18 @@ class AdminController extends Controller
         $driver->save();
 
         return redirect()->back()->with('success', 'A fuvarozó sikeresen jóváhagyva.');
+    }
+
+    public function generateApiToken()
+    {
+        $admin = Auth::guard('admin')->user();
+
+        $admin->token = Str::random(40);
+        $admin->save();
+
+        return redirect()
+            ->back()
+            ->with('success', 'API token sikeresen létrehozva.');
     }
 
     public function dashboard(Request $request)

@@ -8,7 +8,76 @@
         </div>
     @endif
 
+    @if(auth('admin')->user()->token)
+        <div class="modal fade" id="apiTokenModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">API token</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            Ne ossza meg ezt a tokent másokkal!
+                        </div>
+
+                        <code class="d-block p-2 bg-light">
+                                                    {{ auth('admin')->user()->token }}
+                                                </code>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+
     <h1 class="mb-4">Adminisztrációs Felület</h1>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title mb-3">API hozzáférés</h5>
+
+            @if(auth('admin')->user()->token === null)
+                <p class="mb-2">Még nincs API tokened. Kérlek generálj egyet az alábbi gombbal.</p>
+                <form method="POST" action="{{ route('admin.api-token.generate') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-key-fill me-1"></i> API token generálása
+                    </button>
+                </form>
+            @else
+                <p class="mb-2">API tokened aktív. Az alábbi gomb segítségével megtekintheted.</p>
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#apiTokenModal">
+                    <i class="bi bi-eye-fill me-1"></i> Token megtekintése
+                </button>
+
+                <div class="modal fade" id="apiTokenModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-light">
+                                <h5 class="modal-title">API token</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="alert alert-warning">
+                                    Ne oszd meg ezt a tokent másokkal!
+                                </div>
+                                <pre class="bg-light p-2 rounded">{{ auth('admin')->user()->token }}</pre>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
 
     <div class="d-flex justify-content-between mb-3 align-items-center">
         <h3>Munkák</h3>
@@ -33,7 +102,6 @@
         </div>
     </div>
 
-
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -51,8 +119,8 @@
         <tbody>
             @foreach ($jobs as $job)
                 <tr class="
-                                        {{ !$job->driver_id ? 'table-warning' : '' }}
-                                        {{ $job->status === 'failed' ? 'table-danger' : '' }}">
+                                    {{ !$job->driver_id ? 'table-warning' : '' }}
+                                    {{ $job->status === 'failed' ? 'table-danger' : '' }}">
                     <td>{{ $job->id }}</td>
                     <td>{{ $job->from_address }}</td>
                     <td>{{ $job->to_address }}</td>
@@ -192,48 +260,48 @@
     @endforeach
 
     <div class="modal fade" id="createJobModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-                    <form method="POST" action="{{ route('admin.jobs.create') }}">
-                        @csrf
+                <form method="POST" action="{{ route('admin.jobs.create') }}">
+                    @csrf
 
-                        <div class="modal-header">
-                            <h5 class="modal-title">Új Munka Létrehozása</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Új Munka Létrehozása</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label>Kiindulási cím:</label>
+                            <input type="text" name="from_address" class="form-control" required>
                         </div>
 
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label>Kiindulási cím:</label>
-                                <input type="text" name="from_address" class="form-control" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label>Érkezési cím:</label>
-                                <input type="text" name="to_address" class="form-control" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label>Címzett neve:</label>
-                                <input type="text" name="recipient_name" class="form-control" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label>Címzett telefonszáma:</label>
-                                <input type="text" name="recipient_phone" class="form-control" required>
-                            </div>
+                        <div class="mb-3">
+                            <label>Érkezési cím:</label>
+                            <input type="text" name="to_address" class="form-control" required>
                         </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                            <button type="submit" class="btn btn-primary">Létrehozás</button>
+                        <div class="mb-3">
+                            <label>Címzett neve:</label>
+                            <input type="text" name="recipient_name" class="form-control" required>
                         </div>
 
-                    </form>
-                </div>
+                        <div class="mb-3">
+                            <label>Címzett telefonszáma:</label>
+                            <input type="text" name="recipient_phone" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                        <button type="submit" class="btn btn-primary">Létrehozás</button>
+                    </div>
+
+                </form>
             </div>
         </div>
+    </div>
 
     <h3 class="mt-5">Fuvarozók</h3>
 
