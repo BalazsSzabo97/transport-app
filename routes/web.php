@@ -24,6 +24,10 @@ Route::get('/', function () {
 // Login POST handler (for both admin and driver)
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
+Route::get('/login', function () {
+    return redirect()->route('index');
+})->name('login');
+
 // Register
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
