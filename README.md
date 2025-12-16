@@ -1,59 +1,166 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Transport App
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Projekt áttekintés
 
-## About Laravel
+Ez a projekt egy **Laravel alapú szállítmánykezelő alkalmazás**, amelyet egy interiju feladatként hoztam létre. A rendszer támogatja az **adminisztrátorok** és a **fuvarozók** szerepkörét, lehetővé téve a munkák létrehozását, hozzárendelését és státusz követését mind **webes felületen**, mind pedig **token alapú REST API-n** keresztül.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Az alkalmazás tartalmaz:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* Szerepkör alapú hitelesítés (Admin / Fuvarozó)
+* Munka életciklus kezelése
+* Biztonságos API hozzáférés tokenekkel
+* PHPUnit feature tesztek a fő funkciókhoz
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Szerepkörök és funkciók
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Admin
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* Webes felületen történő bejelentkezés
+* Munkák létrehozása, frissítése, hozzárendelése és törlése
+* Fuvarozók regisztrációjának jóváhagyása
+* API token generálása és megtekintése
+* Admin irányítópult elérése
 
-## Laravel Sponsors
+### Fuvarozó
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* Webes felületen történő bejelentkezés
+* Hozzárendelt munkák megtekintése
+* Munka státusz frissítése (assigned → in_progress → completed / failed)
+* Regisztrációkor automatikusan API tokent kap
+* Fuvarozói irányítópult elérése
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Hitelesítés
 
-## Contributing
+* **Webes hitelesítés** Laravel guard-okkal:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+  * `auth:admin`
+  * `auth:driver`
 
-## Code of Conduct
+* **API hitelesítés** token alapú:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+  * A token a request header-ben kerül küldésre: `token: <API_TOKEN>`
+  * Admin token teljes hozzáférést biztosít minden munkához
+  * Fuvarozó token csak a **saját munkáik státuszának frissítésére** használható
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## API végpontok (bónusz)
 
-## License
+### Admin API
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Módszer | Végpont                           | Leírás               |
+| ------- | --------------------------------- | -------------------- |
+| POST    | `/api/jobs`                       | Új munka létrehozása |
+| PATCH   | `/api/jobs/{jobId}`               | Munka frissítése     |
+| POST    | `/api/drivers/{driverId}/confirm` | Fuvarozó jóváhagyása |
+
+**Header-ek:**
+
+```
+token: ADMIN_API_TOKEN
+Accept: application/json
+```
+
+---
+
+### Fuvarozó API
+
+| Módszer | Végpont                           | Leírás                   |
+| ------- | --------------------------------- | ------------------------ |
+| PATCH   | `/api/driver/jobs/{jobId}/status` | Munka státusz frissítése |
+
+**Header-ek:**
+
+```
+token: DRIVER_API_TOKEN
+Accept: application/json
+```
+
+---
+
+## Tesztelés
+
+A projekt tartalmaz **PHPUnit feature teszteket**, amelyek lefedik a legfontosabb funkciókat:
+
+### Megvalósított tesztek
+
+* Admin képes új munka létrehozására
+* Admin képes meglévő munka frissítésére
+* Admin képes részleges mezők frissítésére
+* Érvénytelen státusz esetén validáció
+* Fuvarozó képes saját munkájának státuszát frissíteni (API)
+* Fuvarozó nem frissítheti más munkáját
+
+A tesztek a következőket használják:
+
+* `RefreshDatabase`
+* Seederek a model factory-k helyett
+
+### Tesztek futtatása
+
+```bash
+php artisan test
+```
+
+---
+
+## Telepítés
+
+### Követelmények
+
+* PHP 8.2+
+* Composer
+* SQLite / MySQL
+* Node.js & NPM (Vite asset-ekhez)
+
+### Telepítési lépések
+
+```bash
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+```
+
+Az alkalmazás elérhető a következő címen:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+## Projekt struktúra
+
+```
+app/
+ ├── Http/Controllers
+ ├── Models
+ ├── Providers
+routes/
+ ├── web.php
+ ├── api.php
+database/
+ ├── migrations
+ ├── seeders
+tests/
+ ├── Feature
+```
+
+---
+
+---
+
+## Licenc
+
+Ez a projekt interijú projektként jött létre az [Avorado](https://avorado.io/) részére.
+
+---
+
+**Minden feladat követelménye teljesítve, tesztelve és ellenőrizve.**
