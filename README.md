@@ -48,7 +48,21 @@ Az alkalmazás tartalmaz:
 
 ---
 
-## API végpontok (bónusz)
+## Alapértelmezett bejelentkezési adatok 
+
+* **Admin** :
+
+  * `Email: admin@adminmail.com`
+  * `Jelszó: password123`
+
+* **Fuvarozó** :
+
+  * `Email: k.janos@mail.com`
+  * `Jelszó: driverpass`
+
+---
+
+## API végpontok
 
 ### Admin API
 
