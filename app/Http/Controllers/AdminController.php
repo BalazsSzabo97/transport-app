@@ -60,22 +60,35 @@ class AdminController extends Controller
     public function updateJob(Request $request, $jobId)
     {
         $request->validate([
-            'from_address' => 'required|string',
-            'to_address' => 'required|string',
-            'recipient_name' => 'required|string',
-            'recipient_phone' => 'required|string',
+            'from_address' => 'sometimes|required|string',
+            'to_address' => 'sometimes|required|string',
+            'recipient_name' => 'sometimes|required|string',
+            'recipient_phone' => 'sometimes|required|string',
+            'status' => 'sometimes|in:assigned,in_progress,completed,failed',
         ]);
 
         $job = Job::findOrFail($jobId);
-        $job->from_address = $request->from_address;
-        $job->to_address = $request->to_address;
-        $job->recipient_name = $request->recipient_name;
-        $job->recipient_phone = $request->recipient_phone;
+
+        $fields = [
+            'from_address',
+            'to_address',
+            'recipient_name',
+            'recipient_phone',
+            'status',
+        ];
+
+        foreach ($fields as $field) {
+            if ($request->has($field)) {
+                $job->$field = $request->$field;
+            }
+        }
+
         $job->save();
 
-        return redirect()->route('admin.dashboard')->with('success', 'Munka frissítve!');
+        return redirect()
+            ->route('admin.dashboard')
+            ->with('success', 'Munka frissítve!');
     }
-
 
     public function deleteJob($jobId)
     {
