@@ -52,13 +52,17 @@ Az alkalmazás tartalmaz:
 
 * **Admin** :
 
-  * `Email: admin@adminmail.com`
-  * `Jelszó: password123`
+  ```
+  Email: admin@adminmail.com
+  Jelszó: password123
+  ```
 
 * **Fuvarozó** :
 
-  * `Email: k.janos@mail.com`
-  * `Jelszó: driverpass`
+  ```
+  Email: k.janos@mail.com
+  Jelszó: driverpass
+  ```
 
 ---
 
