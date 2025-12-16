@@ -33,6 +33,35 @@ Az alkalmazás tartalmaz:
 
 ---
 
+## Telepítés
+
+### Követelmények
+
+* PHP 8.2+
+* Composer
+* SQLite / MySQL
+* Node.js & NPM (Vite asset-ekhez)
+
+### Telepítési lépések
+
+```bash
+composer install
+npm install
+npm run dev
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+```
+
+Az alkalmazás elérhető a következő címen:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
 ## Hitelesítés
 
 * **Webes hitelesítés** Laravel guard-okkal:
@@ -122,34 +151,6 @@ A tesztek a következőket használják:
 
 ```bash
 php artisan test
-```
-
----
-
-## Telepítés
-
-### Követelmények
-
-* PHP 8.2+
-* Composer
-* SQLite / MySQL
-* Node.js & NPM (Vite asset-ekhez)
-
-### Telepítési lépések
-
-```bash
-composer install
-npm install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate --seed
-php artisan serve
-```
-
-Az alkalmazás elérhető a következő címen:
-
-```
-http://127.0.0.1:8000
 ```
 
 ---
