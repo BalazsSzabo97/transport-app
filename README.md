@@ -174,11 +174,9 @@ tests/
 
 ---
 
----
-
 ## Licenc
 
-Ez a projekt interijú projektként jött létre az [Avorado](https://avorado.io/) részére.
+Ez a repository, interijú projektként jött létre az [Avorado](https://avorado.io/) részére.
 
 ---
 
